@@ -1,13 +1,18 @@
 package com.example.linebot;
 
 import com.example.linebot.replier.Follow;
+import com.example.linebot.replier.Parrot;
+import com.example.linebot.replier.Greet;
+
 import com.linecorp.bot.model.event.FollowEvent;
-import com.linecorp.bot.model.message.Message;
-import com.linecorp.bot.spring.boot.annotation.EventMapping;
-import com.linecorp.bot.spring.boot.annotation.LineMessageHandler;
 import com.linecorp.bot.model.event.message.TextMessageContent;
 import com.linecorp.bot.model.event.MessageEvent;
-import com.example.linebot.replier.Parrot;
+
+import com.linecorp.bot.model.message.Message;
+
+import com.linecorp.bot.spring.boot.annotation.EventMapping;
+import com.linecorp.bot.spring.boot.annotation.LineMessageHandler;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,8 +32,15 @@ public class Callback {
     // 文章で話しかけられたとき（テキストメッセージのイベント）に対応する
     @EventMapping
     public Message handleMessage(MessageEvent<TextMessageContent> event){
-        Parrot parrot = new Parrot(event);
-        return parrot.reply();
+        TextMessageContent tmc = event.getMessage();
+        String text = tmc.getText();
+        switch (text){
+            case "やあ":
+                Greet greet = new Greet();
+                return greet.reply();
+            default:
+                Parrot parrot = new Parrot(event);
+                return parrot.reply();
+        }
     }
-
 }
