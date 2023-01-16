@@ -27,6 +27,7 @@ public class ReminderService {
         String userId = tuple.getUserId();
         String pushText = tuple.getPushText();
         String body = String.format("%s の時間です！", pushText);
+        repository.deletePreviousItems();
         return new PushMessage(userId, new TextMessage(body));
     }
 
