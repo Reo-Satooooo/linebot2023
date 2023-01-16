@@ -1,19 +1,19 @@
 package com.example.linebot;
 
 import com.example.linebot.replier.*;
+import com.example.linebot.service.ReminderService;
 
 import com.linecorp.bot.model.event.FollowEvent;
 import com.linecorp.bot.model.event.message.TextMessageContent;
 import com.linecorp.bot.model.event.MessageEvent;
-
 import com.linecorp.bot.model.message.Message;
-
 import com.linecorp.bot.model.message.TextMessage;
 import com.linecorp.bot.spring.boot.annotation.EventMapping;
 import com.linecorp.bot.spring.boot.annotation.LineMessageHandler;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.regex.Pattern;
 
@@ -21,6 +21,13 @@ import java.util.regex.Pattern;
 public class Callback {
 
     private static final Logger log = LoggerFactory.getLogger(Callback.class);
+
+    private final ReminderService reminderService;
+
+    @Autowired
+    public Callback(ReminderService reminderService){
+        this.reminderService = reminderService;
+    }
 
     // フォローイベントに対応する
     @EventMapping
@@ -38,7 +45,8 @@ public class Callback {
         Intent intent =  Intent.whichIntent(text);
         switch (intent){
             case REMINDER:
-                return new TextMessage("リマインダーです");
+                RemindOn remindOn = reminderService.doReplyOfNewItem(event);
+                return remindOn.reply();
             case UNKNOWN:
             default:
                 Parrot parrot = new Parrot(event);
