@@ -2,9 +2,14 @@ package com.example.linebot.repository;
 
 import com.example.linebot.value.ReminderItem;
 import com.example.linebot.value.ReminderSlot;
+import com.example.linebot.value.ReminderTuple;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.DataClassRowMapper;
 import org.springframework.stereotype.Repository;
+
+import java.time.LocalTime;
+import java.util.List;
 
 @Repository
 public class ReminderRepository {
@@ -14,6 +19,16 @@ public class ReminderRepository {
     @Autowired
     public ReminderRepository(JdbcTemplate jdbcTemplate){
         this.jdbc = jdbcTemplate;
+    }
+
+    public List<ReminderTuple> findPreviousItems(){
+        // languages = sql
+        String sql = "select user_id, push_at, push_text " + "from reminder_item " + "where push_at <= ? ";
+
+        LocalTime now = LocalTime.now();
+        List<ReminderTuple> list = jdbc.query(sql, new DataClassRowMapper(ReminderTuple.class), now);
+
+        return list;
     }
 
     public void insert(ReminderItem item){
