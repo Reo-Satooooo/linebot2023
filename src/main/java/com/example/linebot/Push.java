@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.scheduling.annotation.Scheduled;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -39,6 +40,7 @@ public class Push {
     }
 
     @GetMapping("timetone")
+    @Scheduled(cron = "0 */1 * * * *", zone = "Asia/Tokyo")
     public String pushTime(){
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("a K:mm");
         String text = dtf.format(LocalDateTime.now());
