@@ -1,6 +1,7 @@
 package com.example.linebot;
 
 import com.example.linebot.replier.*;
+import com.example.linebot.service.CovidGovService;
 import com.example.linebot.service.ReminderService;
 
 import com.linecorp.bot.model.event.FollowEvent;
@@ -23,10 +24,12 @@ public class Callback {
     private static final Logger log = LoggerFactory.getLogger(Callback.class);
 
     private final ReminderService reminderService;
+    private final CovidGovService covidGovService;
 
     @Autowired
-    public Callback(ReminderService reminderService){
+    public Callback(ReminderService reminderService, CovidGovService covidGovService){
         this.reminderService = reminderService;
+        this.covidGovService = covidGovService;
     }
 
     // フォローイベントに対応する
@@ -47,6 +50,9 @@ public class Callback {
             case REMINDER:
                 RemindOn remindOn = reminderService.doReplyOfNewItem(event);
                 return remindOn.reply();
+            case COVID_TOTAL:
+                CovidReport covidReport = covidGovService.doReplyWithCovid(event);
+                return covidReport.reply();
             case UNKNOWN:
             default:
                 Parrot parrot = new Parrot(event);
