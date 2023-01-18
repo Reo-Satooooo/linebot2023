@@ -6,7 +6,10 @@ import java.util.regex.Pattern;
 public enum Intent {
 
     // メッセージの正規表現パターンに対応するやりとり状態の定義
-    REMINDER("^(\\d{1,2}):(\\d{1,2})に(.{1,32})$"),UNKNOWN(".+");
+    REMINDER("^(\\d{1,2}):(\\d{1,2})に(.{1,32})$"),
+    COVID_TOTAL("^(.*)の感染者数$"),
+    UNKNOWN(".+");
+
 
     private final String regexp;
 
